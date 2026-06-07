@@ -8,10 +8,11 @@
 import SwiftUI
 
 @main
-struct EjemploDesktopApp: App {
+struct EstudioFlashcardsApp: App {
+    @State private var store = DataStore()
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView().environment(store)
         }
     }
 }

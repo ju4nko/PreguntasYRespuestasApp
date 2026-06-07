@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		818C10EA2FD5AF2A005F5286 /* EjemploDesktop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EjemploDesktop.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		818C10EA2FD5AF2A005F5286 /* EstudioFlashcards.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EstudioFlashcards.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		818C10EC2FD5AF2A005F5286 /* EjemploDesktop */ = {
+		818C10EC2FD5AF2A005F5286 /* EstudioFlashcards */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = EjemploDesktop;
+			path = EstudioFlashcards;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -32,7 +32,7 @@
 		818C10E12FD5AF2A005F5286 = {
 			isa = PBXGroup;
 			children = (
-				818C10EC2FD5AF2A005F5286 /* EjemploDesktop */,
+				818C10EC2FD5AF2A005F5286 /* EstudioFlashcards */,
 				818C10EB2FD5AF2A005F5286 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -40,7 +40,7 @@
 		818C10EB2FD5AF2A005F5286 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				818C10EA2FD5AF2A005F5286 /* EjemploDesktop.app */,
+				818C10EA2FD5AF2A005F5286 /* EstudioFlashcards.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,9 +48,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		818C10E92FD5AF2A005F5286 /* EjemploDesktop */ = {
+		818C10E92FD5AF2A005F5286 /* EstudioFlashcards */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 818C10F52FD5AF2B005F5286 /* Build configuration list for PBXNativeTarget "EjemploDesktop" */;
+			buildConfigurationList = 818C10F52FD5AF2B005F5286 /* Build configuration list for PBXNativeTarget "EstudioFlashcards" */;
 			buildPhases = (
 				818C10E62FD5AF2A005F5286 /* Sources */,
 				818C10E72FD5AF2A005F5286 /* Frameworks */,
@@ -61,13 +61,13 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				818C10EC2FD5AF2A005F5286 /* EjemploDesktop */,
+				818C10EC2FD5AF2A005F5286 /* EstudioFlashcards */,
 			);
-			name = EjemploDesktop;
+			name = EstudioFlashcards;
 			packageProductDependencies = (
 			);
 			productName = EjemploDesktop;
-			productReference = 818C10EA2FD5AF2A005F5286 /* EjemploDesktop.app */;
+			productReference = 818C10EA2FD5AF2A005F5286 /* EstudioFlashcards.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -85,7 +85,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 818C10E52FD5AF2A005F5286 /* Build configuration list for PBXProject "EjemploDesktop" */;
+			buildConfigurationList = 818C10E52FD5AF2A005F5286 /* Build configuration list for PBXProject "EstudioFlashcards" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -99,7 +99,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				818C10E92FD5AF2A005F5286 /* EjemploDesktop */,
+				818C10E92FD5AF2A005F5286 /* EstudioFlashcards */,
 			);
 		};
 /* End PBXProject section */
@@ -306,7 +306,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		818C10E52FD5AF2A005F5286 /* Build configuration list for PBXProject "EjemploDesktop" */ = {
+		818C10E52FD5AF2A005F5286 /* Build configuration list for PBXProject "EstudioFlashcards" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				818C10F32FD5AF2B005F5286 /* Debug */,
@@ -315,7 +315,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		818C10F52FD5AF2B005F5286 /* Build configuration list for PBXNativeTarget "EjemploDesktop" */ = {
+		818C10F52FD5AF2B005F5286 /* Build configuration list for PBXNativeTarget "EstudioFlashcards" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				818C10F62FD5AF2B005F5286 /* Debug */,
