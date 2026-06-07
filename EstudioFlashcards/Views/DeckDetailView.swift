@@ -11,6 +11,7 @@ struct DeckDetailView: View {
     @Environment(DataStore.self) private var store
     @State private var showCardForm = false
     @State private var cardToEdit: Card? = nil
+    @State private var showStudy = false
     let deck: Deck
     var body: some View {
         VStack(alignment: .leading) {
@@ -55,11 +56,21 @@ struct DeckDetailView: View {
                 }label: {
                     Label("Nueva tarjeta", systemImage: "rectangle.badge.plus")
                 }
+                
+            }
+            ToolbarItem(placement: .automatic) {
+                Button{
+                    showStudy = true
+                }label: {
+                    Label("Estudiar", systemImage:"graduationcap")
+                }
             }
         }.sheet(isPresented: $showCardForm) {
             CardFormView(mode: .create(deckId: deck.id))
         }.sheet(item: $cardToEdit) { card in
             CardFormView(mode: .edit(card))
+        }.sheet(isPresented: $showStudy) {
+            StudyView(deck:deck, cards: store.cards(for:deck).shuffled())
         }
     }
 }
