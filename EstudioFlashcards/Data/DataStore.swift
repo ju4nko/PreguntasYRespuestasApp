@@ -7,49 +7,111 @@
 
 import Foundation
 import Observation
+import FirebaseFirestore
+import FirebaseCore
 
 @Observable
 final class DataStore {
     var decks: [Deck] = []
     var cards: [Card] = []
     
+    // Referencia al cliente Firestore
+    private let db: Firestore
+    
+    // Listeners (los guardamos para poder cancelarlos al desinicializar)
+    private var decksListener: ListenerRegistration?
+    private var cardsListener: ListenerRegistration?
+    
     init() {
-        loadSampleData()
+        // Asegúrate de que FirebaseApp esté configurado antes de usar Firestore
+        if FirebaseApp.app() == nil {
+            FirebaseApp.configure()
+        }
+        self.db = Firestore.firestore()
+        startListening()
     }
     
-    private func loadSampleData() {
-        // Creamos los decks de ejemplo
-        let swift_basico: Deck = Deck(title: "Swift Básico", details: "Carta para aprender swift", color: .red)
-        let capitales: Deck = Deck(title: "Capitales", details: "Lista de capitales del mundo", color: .blue)
-        let historia: Deck = Deck(title: "Historia", details: "Historia de España", color: .yellow)
+    deinit {
+        decksListener?.remove()
+        cardsListener?.remove()
+    }
+    
+    private func startListening() {
         
+        // Escuchar la colección "decks"
+        decksListener = db.collection("decks")
+            .order(by: "createdAt", descending: true)
+            .addSnapshotListener { [weak self] snapshot, error in
+                guard let self = self else { return }
+                
+                if let error = error {
+                    print("❌ Error escuchando decks: \(error)")
+                    return
+                }
+                
+                guard let documents = snapshot?.documents else {
+                    self.decks = []
+                    return
+                }
+                
+                // Convertir cada documento en Deck
+                self.decks = documents.compactMap { doc in
+                    try? doc.data(as: Deck.self)
+                }
+            }
         
-        // Creamos cartas de ejemplo
-        let card1: Card = Card(deckId: swift_basico.id, question: "¿En que lenguaje se desarrolla iOS?", answer: "Swift")
-        let card2: Card = Card(deckId: capitales.id, question: "¿Cuál es la capital de Francia?", answer: "París")
-        let card3: Card = Card(deckId: capitales.id, question: "¿Cuál es la capital de España?", answer: "Madrid")
-        let card4: Card = Card(deckId: historia.id, question: "¿En qué año España ganó la Copa del Mundo?", answer: "2018")
-        
-        self.decks = [swift_basico, capitales, historia]
-        self.cards = [card1, card2, card3, card4]
-        
+        // Escuchar la colección "cards"
+        cardsListener = db.collection("cards")
+            .order(by: "createdAt", descending: true)
+            .addSnapshotListener { [weak self] snapshot, error in
+                guard let self = self else { return }
+                
+                if let error = error {
+                    print("❌ Error escuchando cards: \(error)")
+                    return
+                }
+                
+                guard let documents = snapshot?.documents else {
+                    self.cards = []
+                    return
+                }
+                
+                self.cards = documents.compactMap { doc in
+                    try? doc.data(as: Card.self)
+                }
+            }
     }
     
     // Métodos CRUD para Deck
     
     func addDeck(title: String, details: String, color: DeckColor) {
-        decks.append(Deck(title: title, details: details, color: color))
+        let deck = Deck(title: title, details: details, color: color)
+        do {
+            try db.collection("decks").document(deck.id).setData(from: deck)
+        } catch {
+            print("❌ Error añadiendo deck: \(error)")
+        }
     }
     
     func updateDeck(_ deck: Deck) {
-        guard let index = decks.firstIndex(where:{$0.id == deck.id}) else { return }
-        decks[index] = deck
+        do {
+            try db.collection("decks").document(deck.id).setData(from: deck)
+        } catch {
+            print("❌ Error actualizando deck: \(error)")
+        }
     }
     
     func deleteDeck(_ deck: Deck) {
-        decks.removeAll { $0.id == deck.id }
-        // Borramos todas las cartas para que no se queden huerfanas
-        cards.removeAll { $0.deckId == deck.id}
+        db.collection("decks").document(deck.id).delete()
+
+        // Borrar también las cards de ese deck (cascada)
+        db.collection("cards")
+            .whereField("deckId", isEqualTo: deck.id)
+            .getDocuments { snapshot, error in
+                snapshot?.documents.forEach { doc in
+                    doc.reference.delete()
+                }
+            }
         
     }
     
@@ -60,16 +122,24 @@ final class DataStore {
     }
     
     func addCard(deckId: String, question: String, answer: String ) {
-        cards.append(Card(deckId: deckId, question: question, answer: answer))
+        let card = Card(deckId: deckId, question: question, answer: answer)
+        do {
+            try db.collection("cards").document(card.id).setData(from: card)
+        } catch {
+            print("❌ Error añadiendo card: \(error)")
+        }
     }
     
     func updateCard(_ card: Card) {
-        guard let index = cards.firstIndex(where:{$0.id == card.id}) else { return }
-        cards[index] = card
+        do {
+            try db.collection("cards").document(card.id).setData(from: card)
+        } catch {
+            print("❌ Error actualizando card: \(error)")
+        }
     }
     
     func deleteCard(_ card: Card) {
-        cards.removeAll { $0.id == card.id }
+        db.collection("cards").document(card.id).delete()
     
     }
     

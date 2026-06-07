@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-enum DeckColor: String, CaseIterable, Identifiable, Hashable {
+enum DeckColor: String, CaseIterable, Identifiable, Hashable, Codable {
     case red
     case blue
     case green
@@ -57,18 +57,34 @@ enum CardFormMode {
     case edit(Card)
 }
 
-struct Deck: Identifiable, Hashable {
-    let id: String = UUID().uuidString
+struct Deck: Identifiable, Hashable, Codable {
+    let id: String
     var title: String
     var details : String
     var color: DeckColor
-    let createdAt: Date = Date()
+    let createdAt: Date
+    
+    init(title: String, details: String, color: DeckColor) {
+        self.id = UUID().uuidString
+        self.title = title
+        self.details = details
+        self.color = color
+        self.createdAt = Date()
+    }
 }
 
-struct Card : Identifiable, Hashable {
-    let id: String = UUID().uuidString
+struct Card : Identifiable, Hashable, Codable {
+    let id: String
     let deckId: String
     var question: String
     var answer: String
-    let createdAt: Date = Date()
+    let createdAt: Date
+    
+    init(deckId: String, question: String, answer: String) {
+        self.id = UUID().uuidString
+        self.deckId = deckId
+        self.question = question
+        self.answer = answer
+        self.createdAt = Date()
+    }
 }
