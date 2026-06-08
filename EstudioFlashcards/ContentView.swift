@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct ContentView: View {
     @Environment(DataStore.self) private var store
+    @Environment(AuthManager.self) private var auth
+    
     @State private var selectedDeckId: Deck.ID?
     @State private var showDeckForm = false
     
@@ -31,6 +34,20 @@ struct ContentView: View {
                     showDeckForm = true
                 } label: {
                     Label("Nuevo mazo", systemImage: "folder.badge.plus")
+                }
+            }
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    auth.signOut()
+                } label: {
+                    Label("Cerrar sesión", systemImage: "rectangle.portrait.and.arrow.right")
+                }
+            }
+            ToolbarItem(placement: .automatic) {
+                if let email = auth.user?.email {
+                    Text(email)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
             }
         }

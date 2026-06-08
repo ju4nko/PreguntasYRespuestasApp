@@ -8,6 +8,7 @@
 import Foundation
 import Observation
 import FirebaseFirestore
+import FirebaseAuth
 import FirebaseCore
 
 @Observable
@@ -21,6 +22,7 @@ final class DataStore {
     // Listeners (los guardamos para poder cancelarlos al desinicializar)
     private var decksListener: ListenerRegistration?
     private var cardsListener: ListenerRegistration?
+    private var authHandle: AuthStateDidChangeListenerHandle?
     
     init() {
         // Asegúrate de que FirebaseApp esté configurado antes de usar Firestore
@@ -28,7 +30,11 @@ final class DataStore {
             FirebaseApp.configure()
         }
         self.db = Firestore.firestore()
-        startListening()
+        // Escuchar cambios de auth y reiniciar listeners cuando pase
+        authHandle = Auth.auth().addStateDidChangeListener { [weak self] _, user in
+            self?.restartListening(for: user?.uid)
+        }
+    
     }
     
     deinit {
@@ -36,10 +42,22 @@ final class DataStore {
         cardsListener?.remove()
     }
     
-    private func startListening() {
+    private func restartListening(for userId: String?) {
+        // Cancelar listeners anteriores
+        decksListener?.remove()
+        cardsListener?.remove()
+        decksListener = nil
+        cardsListener = nil
+        
+        guard let userId = userId else {
+            decks = []
+            cards = []
+            return
+        }
         
         // Escuchar la colección "decks"
         decksListener = db.collection("decks")
+            .whereField("userId", isEqualTo: userId)
             .order(by: "createdAt", descending: true)
             .addSnapshotListener { [weak self] snapshot, error in
                 guard let self = self else { return }
@@ -62,6 +80,7 @@ final class DataStore {
         
         // Escuchar la colección "cards"
         cardsListener = db.collection("cards")
+            .whereField("userId", isEqualTo: userId)
             .order(by: "createdAt", descending: true)
             .addSnapshotListener { [weak self] snapshot, error in
                 guard let self = self else { return }
@@ -85,7 +104,8 @@ final class DataStore {
     // Métodos CRUD para Deck
     
     func addDeck(title: String, details: String, color: DeckColor) {
-        let deck = Deck(title: title, details: details, color: color)
+        guard let userId = Auth.auth().currentUser?.uid else { return }
+        let deck = Deck(userId: userId, title: title, details: details, color: color)
         do {
             try db.collection("decks").document(deck.id).setData(from: deck)
         } catch {
@@ -122,7 +142,8 @@ final class DataStore {
     }
     
     func addCard(deckId: String, question: String, answer: String ) {
-        let card = Card(deckId: deckId, question: question, answer: answer)
+        guard let userId = Auth.auth().currentUser?.uid else { return }
+        let card = Card(userId: userId, deckId: deckId, question: question, answer: answer)
         do {
             try db.collection("cards").document(card.id).setData(from: card)
         } catch {

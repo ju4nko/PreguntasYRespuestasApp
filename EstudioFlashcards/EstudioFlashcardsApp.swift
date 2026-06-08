@@ -12,15 +12,20 @@ import FirebaseFirestore
 @main
 struct EstudioFlashcardsApp: App {
     
+    @State private var auth = AuthManager()
     @State private var store = DataStore()
+    
+    
     init() {
         if FirebaseApp.app() == nil {
             FirebaseApp.configure()
         }
+        
     }
     var body: some Scene {
         WindowGroup {
-            ContentView().environment(store)
+            RootView().environment(store)
+                        .environment(auth)
         }
     }
 }

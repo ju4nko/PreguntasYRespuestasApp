@@ -59,13 +59,15 @@ enum CardFormMode {
 
 struct Deck: Identifiable, Hashable, Codable {
     let id: String
+    let userId: String
     var title: String
     var details : String
     var color: DeckColor
     let createdAt: Date
     
-    init(title: String, details: String, color: DeckColor) {
+    init(userId: String, title: String, details: String, color: DeckColor) {
         self.id = UUID().uuidString
+        self.userId = userId
         self.title = title
         self.details = details
         self.color = color
@@ -75,13 +77,15 @@ struct Deck: Identifiable, Hashable, Codable {
 
 struct Card : Identifiable, Hashable, Codable {
     let id: String
+    let userId: String
     let deckId: String
     var question: String
     var answer: String
     let createdAt: Date
     
-    init(deckId: String, question: String, answer: String) {
+    init(userId: String, deckId: String, question: String, answer: String) {
         self.id = UUID().uuidString
+        self.userId = userId
         self.deckId = deckId
         self.question = question
         self.answer = answer
